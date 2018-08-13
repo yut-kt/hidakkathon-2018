@@ -1,0 +1,44 @@
+<% const data = {members: 'active', profile: user['nick_name'], user_id: user['id']} %>
+<%- include('header', {data: data}); %>
+
+<div class="row">
+    <div class="col-md-12 panel panel-primary">
+        <div class=""><h4><i id="memberCount" class="glyphicon glyphicon-user"></i> <%= max_count %>人のメンバー</h4>
+            <% for (let i = 0; i < members.length; i++) { const member = members[i]; %>
+                <div class="list-group">
+                    <div class="list-group-item">
+                        <div class="media">
+                        <a class="media-left" id="memberLink<%= i + 1 %>" href="/member/<%= member.id %>"><img id=memberImage<%= i + 1 %>" class="img-rounded" width="40" height="40" src="/photo/<%= member.id %>"></a>
+                        <div class="media-body" >
+                            <h2 class="element_title media-heading"><a id="memberNickName<%= i + 1 %>" href="/member/<%= member.id %>"><%= member.nick_name %></a></h2>
+                            <button type="button" class="btn btn-info btn-xs pull-right"><i class="glyphicon glyphicon-file"></i> <span id="memberArticleCount<%= i + 1 %>" class="badge"><%= member.articleCnt %></span></button>
+                        </div>
+                    </div>
+                </div>
+            <% } %>
+        </div>
+    </div>
+</div>
+</div>
+
+<div class="col-md-4"></div>
+<div class="col-md-4">
+    <nav>
+        <ul class="pagination">
+            <% if (1 < page) { %>
+                <li><a id="pageBackLink" href="/members?page=<%= page - 1 %>"><span>«</span></a></li>
+            <% } %>
+            <% for (let p = 1; p <= max_page; p++) { %>
+                <% if (page === p) { %>
+                    <li class="active"><a id="currentPageLink" href="/members?page=<%= p %>"><%= p %></a></li>
+                <% } %>
+            <% } %>
+            <% if (page < max_page) { %>
+                <li><a id="pageNextLink" href="/members?page=<%= page + 1 %>"><span>»</span></a></li>
+            <% } %>
+        </ul>
+    </nav>
+</div>
+<div class="col-md-4"></div>
+
+<%- include('footer'); %>

@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/web/thymeleaf/layout">
+<head th:include="index::header"></head>
+<body class="container" style="background-color: #fafafa">
+	<th:brock th:replace="index::gnavi(current='')" />
+
+	<div class="row">
+		<div class="col-md-4 panel">
+			<div class="media">
+				<div class="media-left">
+					<img id="authorIdImage" class="img-rounded " width="50" height="50" th:src="@{|/photo/${author.id}|}" />
+				</div>
+				<div class="media-body">
+					<h3 id="auhtorNickName" class="media-heading" th:text="${author.nickName}">ニックネーム</h3>
+					<button type="button" class="btn btn-info btn-xs">
+						<i class="glyphicon glyphicon-file"></i><span id="authorPostCount" class="badge" th:text="${articleCount}">10</span>
+					</button>
+				</div>
+				<div th:if="${user.id == author.id}" class="media form-group">
+					<form id="profileUpdateForm" th:action="@{|/profileupdate/${user.id}|}" method="GET">
+						<input type="submit" class="btn btn-primary pull-right" value="編集" />
+					</form>
+				</div>
+			</div>
+		</div>
+		<div class="col-md-8 panel panel-primary">
+			<ul class="list-group">
+				<li th:each="article, stat : ${articles}" th:object="${article}" class="list-group-item">
+					<article class="media">
+						<div class="element_icon media-left">
+							<img class="img-rounded" width="40" height="40" th:src="@{|/photo/*{authorId}|}" />
+						</div>
+						<div class="element_body media-body">
+							<div class="element_user media-left" th:text="*{user.nickName}">ニックネーム</div>
+							<div th:id="|authorArticle${stat.count}_updateString|" th:text="*{deltaTime}" class="element_datetime media-right">100年前</div>
+							<h2 class="element_title media-heading">
+								<a th:id="|authorArticle${stat.count}_Link|" th:href="|/article/*{id}|" th:text="*{title}">タイトル</a>
+							</h2>
+							<button type="button" class="btn btn-primary pull-right btn-xs ">
+								<i class="glyphicon glyphicon-thumbs-up"></i>
+								<span th:id="|authorArticle${stat.count}_iineCount|" th:text="*{iineCount}" class="badge">10</span>
+							</button>
+							<div class="element_tag media">
+								<div class="element_tag media-left">
+									<a th:each="tag, tagStat : *{tags}" th:id="|authorArticle${stat.count}_tagIdLink${tagStat.count}|" th:href="@{|/tag/${tag.id}|}" class="element_tag_base">
+										<span th:id="|authorArticle${stat.count}_tagName${tagStat.count}|" th:text="${tag.tagname}" class="element_tag_name label label-default">タグ</span>
+									</a>
+								</div>
+							</div>
+						</div>
+					</article>
+				</li>
+			</ul>
+		</div>
+	</div>
+
+	<div th:include="index::pagination(path=|member/${author.id}|)" class="col-md-4 col-md-offset-4" style="text-align: center;"></div>
+</body>
+</html>

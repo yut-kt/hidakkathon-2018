@@ -1,0 +1,85 @@
+{% extends "base.twig" %}
+{% block profile %} {{ user['nick_name']|e }} {% endblock %}
+{% block user_id %}{{ user['id'] }}{% endblock %}
+{% block content %}
+
+<div class="row">
+  <div class="col-md-9 panel panel-primary">
+    <div class="panel-body">
+      <div class="media">
+          <div class=" media-left" ><a id="articleAuthorIdLink" href="/member/{{ article.author_id }}"><img class="img-rounded" width="40" height="40" src="/photo/{{ article.author_id }}"></a></div>
+          <div class="element_body media-body" >
+              <div id="articleAuthorNickName" class="element_user media-left">{{ article.author.nick_name|e }}</div>
+              <div id="articleUpdateString" class="element_datetime media-right">{{ article.updateString }}</div>
+              <h2 class="element_title media-heading"><a href="/article/{{ article.id }}">{{ article.title }}</a></h2>
+          </div>
+          <div class="media">
+            <pre id="articleDescription" >{{ article.description }}</pre>
+          </div>
+      </div>
+      <div class="form-group">
+      {% if user.id == article.author_id %}
+        <form id="updateArticleForm" action="/update/{{ article.id }}" method="GET">
+          <input type="submit" class="btn btn-primary pull-right" value="編集する" >
+        </form>
+      {% else %}
+        <form id="iineArticleForm" action="/iine/{{ article.id }}" method="POST">
+          {% if doneIine == "1" %}
+          <button id="iineButton" type="button" class="btn btn-primary pull-right active" data-toggle="button" aria-pressed="true" autocomplete="off">
+          {% else %}
+          <button id="iineButton" type="button" class="btn btn-primary pull-right " data-toggle="button" aria-pressed="false" autocomplete="off">
+          {% endif %}
+            <i class="glyphicon glyphicon-thumbs-up"><span id="iineCnt" class="badge">{{ iineCnt }}</span></i>
+          </button>
+<script src="/js/jquery.min.js"></script>
+<script>
+$(function(){
+    $('#iineButton').click(function() {
+
+      var sign ="";
+      if($('#iineButton').attr('aria-pressed') == "false") {
+        $("#iineButton").attr({
+            'class': "btn btn-primary pull-right active",
+            'aria-pressed' : "true", 
+        });
+        sign = "plus";
+      } else {
+        $("#iineButton").attr({
+            'class': "btn btn-primary pull-right ",
+            'aria-pressed' : "false", 
+        });
+        sign ="minus";
+      }
+      $.ajax({
+          type: "POST",
+          url: "/iine/{{ article.id }}",
+          data : {name : sign },
+          success: function(data){
+              if(data.length > 0){
+                  $('#iineCnt').text(data);
+              }
+          }
+      });
+    });
+});
+</script>
+        </form>
+      {% endif %}
+        {% for iine_user in iineUsers %}
+        <a id="iineUserId {{ loop.index }}" href="/member/{{ iine_user.user_id }}"><img class="img-rounded" width="20" height="20" src="/photo/{{ iine_user.user_id }}"></a>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+  <div class="col-md-3">
+    <div class=""><h4><i class="glyphicon glyphicon-tags"></i> タグ</h4></div>
+                {% for tagName in tagNames %}
+                <a href="/tag/{{ tagName.tagId }}" class="element_tag_base" >
+                    <span class="element_tag_name label label-default" >{{ tagName.name }}</span>
+                </a>
+                {% endfor %}
+  </div>
+</div>
+
+
+{% endblock %}

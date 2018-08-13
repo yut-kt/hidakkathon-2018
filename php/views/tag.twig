@@ -1,0 +1,55 @@
+{% extends "base.twig" %}
+{% block profile %} {{ user['nick_name']|e }} {% endblock %}
+{% block user_id %}{{ user['id'] }}{% endblock %}
+{% block content %}
+
+<div class="row">
+  <div class="col-md-12 panel panel-primary">
+    <ul class="list-group">
+      {% for article in tag_articles %}
+      <li class="list-group-item">
+      <article class="media">
+        <div class="element_icon media-left" ><img id="artcileAuhtorLinke{{ loop.index }}" class="img-rounded" width="40" height="40" src="/photo/{{ article.article.author_id }}"></div>
+        <div class="element_body media-body" >
+            <div id="articleAuthorNickName{{ loop.index }}" class="element_user media-left">{{ article.author.nick_name|e }}</div>
+            <div class="element_datetime media-right">{{ article.updateString }}</div>
+            <h2 class="element_title media-heading"><a id="artcileTitleLink{{ loop.index }}" href="/article/{{ article.article.id }}">{{ article.article.title }}</a></h2>
+            <button type="button" class="btn btn-primary pull-right btn-xs "><i class="glyphicon glyphicon-thumbs-up"></i> <span id="articleIineCount{{ loop.index }}" class="badge">{{ article.iineCnt }}</span></button>
+            <div class="element_tag media" >
+              <div class="element_tag media-left" >
+                {% for tagName in article.tagNames %}
+                <a id="article{{ loop.parent.loop.index }}_tagId{{ loop.index }}" href="/tag/{{ tagName.tagId }}" class="element_tag_base" >
+	  	            <span id="article{{ loop.parent.loop.index }}_tagName{{ loop.index }}" class="element_tag_name label label-default" >{{ tagName.name }}</span>
+                </a>
+                {% endfor %}
+              </div>
+            </div>
+        </div>
+      </article>
+      </li>
+      {% endfor %}
+    </ul>
+  </div>
+</div>
+
+<div class="col-md-4 col-md-offset-4">
+  <nav> 
+    <ul class="pagination">
+      {% if 1 < page %}
+        <li><a id="pageBackLink" href="/tag/{{ tag_id }}?page={{page-1}}"><span>«</span></a></li>
+      {% endif %}
+      {% for p in 1..max_page %}
+        {% if page == p %} 
+          <li class="active"><a id="currentPageLink" href="/tag/{{ tag_id }}?page={{p}}">{{p}}</a></li>
+        {% endif %}
+      {% endfor %}
+      {% if page < max_page %}
+        <li><a id="pageNextLink" href="/tag/{{ tag_id }}?page={{page+1}}"><span>»</span></a></li>
+      {% endif %}
+    </ul>
+  </nav>
+</div>
+<div class="col-md-4"></div>
+
+
+{% endblock %}

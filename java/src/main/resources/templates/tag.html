@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/web/thymeleaf/layout">
+<head th:include="index::header"></head>
+<body class="container" style="background-color: #fafafa">
+	<th:brock th:replace="index::gnavi(current='')" />
+
+	<div class="row">
+		<div class="col-md-12 panel panel-primary">
+			<ul class="list-group">
+				<li th:each="article, stat : ${articles}" th:object="${article}" class="list-group-item">
+					<article class="media">
+						<div class="element_icon media-left">
+							<img th:id="|artcileAuhtorLinke${stat.count}|" class="img-rounded" width="40" height="40" th:src="@{|/photo/*{article.authorId}|}" />
+						</div>
+						<div class="element_body media-body">
+							<div th:id="|articleAuthorNickName${stat.count}|" th:text="*{author.nickName}" class="element_user media-left"></div>
+							<div class="element_datetime media-right" th:text="*{deltaTime}">1年前</div>
+							<h2 class="element_title media-heading">
+								<a th:id="|artcileTitleLink${stat.count}|" th:href="|/article/*{article.id}|" th:text="*{article.title}">タイトル</a>
+							</h2>
+							<button type="button" class="btn btn-primary pull-right btn-xs ">
+								<i class="glyphicon glyphicon-thumbs-up"></i>
+								<span th:id="|articleIineCount${stat.count}|" th:text="*{iineCount}" class="badge">10</span>
+							</button>
+							<div class="element_tag media">
+								<div class="element_tag media-left">
+									<a th:each="tag, tagStat : *{tags}" th:id="|article${stat.count}_tagId${tagStat.count}|" th:href="@{|/tag/${tag.id}|}" class="element_tag_base">
+										<span th:id="|article${stat.count}_tagName${tagStat.count}|" th:text="${tag.tagname}" class="element_tag_name label label-default">タグ</span>
+									</a>
+								</div>
+							</div>
+						</div>
+					</article>
+				</li>
+			</ul>
+		</div>
+	</div>
+	<th:brock th:replace="index::pagination(path=|tag/${tagId}|)" />
+</body>
+</html>

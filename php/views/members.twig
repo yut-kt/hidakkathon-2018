@@ -1,0 +1,48 @@
+{% extends "base.twig" %}
+{% block members %} class="active" {% endblock %}
+{% block profile %} {{ user['nick_name']|e }} {% endblock %}
+{% block user_id %}{{ user['id'] }}{% endblock %}
+{% block content %}
+
+<div class="row">
+  <div class="col-md-12 panel panel-primary">
+    <div class=""><h4><i id="memberCount" class="glyphicon glyphicon-user"></i> {{ max_count }}人のメンバー</h4>
+      <div class="list-group">
+        {% for member in members %}
+        <div class="list-group-item">
+          <div class"=media">
+            <a class="media-left" id="memberLink{{ loop.index }}" href="/member/{{ member.id }}"><img id=memberImage{{ loop.index }}" class="img-rounded" width="40" height="40" src="/photo/{{ member.id }}"></a>
+            <div class="media-body" >
+              <h2 class="element_title media-heading"><a id="memberNickName{{ loop.index }}" href="/member/{{ member.id }}">{{ member.nick_name|e }}</a></h2>
+              <button type="button" class="btn btn-info btn-xs pull-right"><i class="glyphicon glyphicon-file"></i> <span id="memberArticleCount{{ loop.index }}" class="badge">{{ member.articleCnt }}</span></button>
+            </div>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="col-md-4"></div>
+<div class="col-md-4">
+  <nav> 
+    <ul class="pagination">
+      {% if 1 < page %}
+        <li><a id="pageBackLink" href="/members?page={{page-1}}"><span>«</span></a></li>
+      {% endif %}
+      {% for p in 1..max_page %}
+        {% if page == p %} 
+          <li class="active"><a id="currentPageLink" href="/members?page={{p}}">{{p}}</a></li>
+        {% endif %}
+      {% endfor %}
+      {% if page < max_page %}
+        <li><a id="pageNextLink" href="/members?page={{page+1}}"><span>»</span></a></li>
+      {% endif %}
+    </ul>
+  </nav>
+</div>
+<div class="col-md-4"></div>
+
+
+{% endblock %}

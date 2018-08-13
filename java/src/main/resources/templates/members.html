@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/web/thymeleaf/layout">
+<head th:include="index::header"></head>
+<body class="container" style="background-color: #fafafa">
+	<th:brock th:replace="index::gnavi(current='members')" />
+
+	<div class="row">
+		<div class="col-md-12 panel panel-primary">
+			<div class="">
+				<h4><i id="memberCount" class="glyphicon glyphicon-user" th:text="${memberCount}">100</i>人のメンバー</h4>
+				<div class="list-group">
+					<div th:each="member, stat : ${members}" th:object="${member}" class="list-group-item">
+						<div class="media">
+							<a class="media-left" th:id="|memberLink${stat.count}|" th:href="@{|/member/*{id}|}">
+								<img th:id="|memberImage${stat.count}|" class="img-rounded" width="40" height="40" th:src="@{|/photo/*{id}|}" />
+							</a>
+							<div class="media-body">
+								<h2 class="element_title media-heading">
+									<a th:id="|memberNickName${stat.count}|" th:href="@{|/member/*{id}|}" th:text="*{nickName}">ニックネーム</a>
+								</h2>
+								<button type="button" class="btn btn-info btn-xs pull-right">
+									<i class="glyphicon glyphicon-file"></i>
+									<span th:id="|memberArticleCount${stat.count}|" th:text="*{articleCount}" class="badge">10</span>
+								</button>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<th:brock th:replace="index::pagination(path='members')" />
+</body>
+</html>

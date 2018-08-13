@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/web/thymeleaf/layout">
+<head th:include="index::header"></head>
+<body class="container" style="background-color: #fafafa">
+	<th:brock th:replace="index::gnavi(current='')" />
+
+	<div class="row">
+		<div class="col-md-9 panel panel-primary">
+			<div class="panel-body">
+				<div class="media">
+					<div class=" media-left">
+						<a id="articleAuthorIdLink" th:href="@{|/member/${article.authorId}|}">
+							<img class="img-rounded" width="40" height="40" th:src="@{|/photo/${article.authorId}|}" />
+						</a>
+					</div>
+					<div class="element_body media-body">
+						<div id="articleAuthorNickName" class="element_user media-left" th:text="${article.user.nickName}">ニックネーム</div>
+						<div id="articleUpdateString" class="element_datetime media-right" th:text="${article.deltaTime}">100年前</div>
+						<h2 class="element_title media-heading">
+							<a th:href="@{|/article/${article.id}|}" th:text="${article.title}">タイトル</a>
+						</h2>
+					</div>
+					<div class="media">
+						<pre id="articleDescription" th:text="${article.description}">本文</pre>
+					</div>
+				</div>
+				<div class="form-group">
+					<form th:if="${user.id == article.authorId}" id="updateArticleForm" th:action="@{|/update/${article.id}|}" method="GET">
+						<input type="submit" class="btn btn-primary pull-right" value="編集する" />
+					</form>
+					<form th:unless="${user.id == article.authorId}" id="iineArticleForm" th:action="@{|/iine/${article.id}|}" method="POST">
+						<button th:if="${doneIine == 1}" id="iineButton" type="button" class="btn btn-primary pull-right active" data-toggle="button" aria-pressed="true">
+							<i class="glyphicon glyphicon-thumbs-up"><span id="iineCnt" class="badge" th:text="${iineCount}">10</span></i>
+						</button>
+						<button th:unless="${doneIine == 1}" id="iineButton" type="button" class="btn btn-primary pull-right" data-toggle="button" aria-pressed="false">
+							<i class="glyphicon glyphicon-thumbs-up"><span id="iineCnt" class="badge" th:text="${iineCount}">10</span></i>
+						</button>
+
+						<script src="/js/jquery.min.js"></script>
+						<script type="text/javascript" th:inline="javascript">
+							/*<![CDATA[*/
+							$(function() {
+								$('#iineButton').click(function() {
+									var sign = "";
+									if ($('#iineButton').attr('aria-pressed') == "false") {
+										$("#iineButton").attr({
+											'class' : "btn btn-primary pull-right active",
+											'aria-pressed' : "true",
+										});
+										sign = "plus";
+									} else {
+										$("#iineButton").attr({
+											'class' : "btn btn-primary pull-right ",
+											'aria-pressed' : "false",
+										});
+										sign = "minus";
+									}
+									$.ajax({
+										type : "POST",
+										url : /*[[|/iine/${article.id}|]]*/,
+										data : {
+											name : sign
+										},
+										success : function(data) {
+											if (data.length > 0) {
+												$('#iineCnt').text(data);
+											}
+										}
+									});
+								});
+							});
+						/*]]>*/
+						</script>
+					</form>
+					<a th:each="iineUser, stat : ${iineUsers}" th:object="${iineUser}" th:id="|iineUserId ${stat.count}|" th:href="@{|/member/*{userId}|}">
+						<img class="img-rounded" width="20" height="20" th:src="@{|/photo/*{userId}|}" />
+					</a>
+				</div>
+			</div>
+		</div>
+		<div class="col-md-3">
+			<div class="">
+				<h4> <i class="glyphicon glyphicon-tags"></i> タグ </h4>
+			</div>
+			<a th:each="tag, stat : ${tags}" th:object="${tag}" th:href="@{|/tag/*{id}|}" class="element_tag_base">
+				<span class="element_tag_name label label-default" th:text="*{tagname}">タグ</span>
+			</a>
+		</div>
+	</div>
+</body>
+</html>

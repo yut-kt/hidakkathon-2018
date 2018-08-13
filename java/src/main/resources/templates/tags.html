@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/web/thymeleaf/layout">
+<head th:include="index::header"></head>
+<body class="container" style="background-color: #fafafa">
+	<th:brock th:replace="index::gnavi(current='tags')" />
+
+	<div class="row">
+		<div class="col-md-12 panel panel-primary">
+			<div class="">
+				<h4 id="tagCount">
+					<i class="glyphicon glyphicon-tags" th:text="${tagCount}"></i>件のタグ
+				</h4>
+				<div class="list-group">
+					<div th:each="tag, stat : ${tags}" th:object="${tag}" class="list-group-item">
+						<a th:id="|tagIdLinke${stat.count}|" th:href="@{|/tag/*{id}|}" th:text="*{tagname}"><i class="glyphicon glyphicon-tag"></i>タグ</a>
+						<button type="button" class="pull-right btn btn-info btn-xs">
+							<i class="glyphicon glyphicon-file"></i> <span th:id="|tagCount${stat.count}|" class="badge" th:text="*{tagCount}">10</span>
+						</button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<th:brock th:replace="index::pagination(path='tags')" />
+</body>
+</html>

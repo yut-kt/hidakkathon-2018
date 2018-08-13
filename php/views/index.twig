@@ -1,0 +1,85 @@
+{% extends "base.twig" %}
+{% block new %} class="active" {% endblock %}
+{% block profile %} {{ user['nick_name']|e }} {% endblock %}
+{% block user_id %}{{ user['id'] }}{% endblock %}
+{% block content %}
+
+<div class="row">
+  <div class="col-md-8 panel panel-primary">
+    <ul class="list-group">
+      {% for article in articles %}
+      <li class="list-group-item">
+      <article class="media">
+        <div class="element_icon media-left" ><a id="articleAuthorLink{{ loop.index }}" href="/member/{{ article.author_id }}"><img id="articleAuthorImage{{ loop.index }}" class="img-rounded" width="40" height="40" src="/photo/{{ article.author_id }}"></a></div>
+        <div class="element_body media-body" >
+            <div id="articleAuthorNickName{{ loop.index }}" class="element_user media-left">{{ article.author.nick_name|e }}</div>
+            <div id="articleUpdateString{{ loop.index }}" class="element_datetime media-right">{{ article.updateString }}</div>
+            <h2 class="element_title media-heading"><a id="articleLink{{ loop.index }}" href="/article/{{ article.id }}">{{ article.title }}</a></h2>
+	            <button type="button" class="btn btn-primary pull-right btn-xs "><i class="glyphicon glyphicon-thumbs-up"></i> <span class="badge" id="articleIineCount{{ loop.index }}" >{{ article.iineCnt }}</span></button>
+            <div class="element_tag media" >
+              <div class="element_tag media-left" >
+                {% for tagName in article.tagNames %}
+                <a id="article{{ loop.parent.loop.index }}_TagId{{ loop.index}}" href="/tag/{{ tagName.tagId }}" class="element_tag_base" >
+	  	            <span id="article{{ loop.parent.loop.index }}_TagName{{ loop.index}}" class="element_tag_name label label-default" >{{ tagName.name }}</span>
+                </a>
+                {% endfor %}
+              </div>
+            </div>
+        </div>
+      </article>
+      </li>
+      {% endfor %}
+    </ul>
+  </div>
+  <div class="col-md-4">
+    <div class=""><h4><i class="glyphicon glyphicon-flag"></i>人気の記事</h4>
+      <ul class="list-group">
+        {% for article in popular_articles %}
+        <li class="list-group-item">
+          <div class="media">
+            <div class="element_icon media-left" ><a href="/"><img class="img-rounded" width="20" height="20" src="/photo/{{ article.article.author_id }}"></a></div>
+            <div class="media-body">
+              <h4 class="media-heading"><a id="popularArticleLink{{ loop.index }}" href="/article/{{ article.article.id }}">{{ article.article.title }}</a></h4>
+               <div class="media">
+                 <span id="popularArticle{{ loop.index }}_iineCount" class="badge">{{ article.iineCnt }}</span>
+                {% for iine_user in article.iine_users %}
+                <a id="popularArticle{{ loop.parnet.loop.index }}_iineUserId {{ loop.index }}" href="/member/{{ iine_user.user_id }}"><img class="img-rounded" width="20" height="20" src="/photo/{{ iine_user.user_id }}"></a>
+                {% endfor %}
+               </div>
+            </div>
+          </div>
+        </li>
+        {% endfor %}
+      </ul>
+    </div>
+    <div class=""><h4><i class="glyphicon glyphicon-user"></i> メンバー</h4>
+      {% for user in online_users %}
+      <a id="onLineUserLink{{ loop.index }}" href="/member/{{ user }}"><img class="img-rounded" width="30" height="30" style="margin: 1px;" src="/photo/{{ user }}"></a>
+      {% endfor %}
+      <div class=""><a href="/members">»メンバー一覧</a></div>
+    </div>
+  </div>
+</div>
+
+<div class="col-md-4"></div>
+<div class="col-md-4">
+  <nav> 
+    <ul class="pagination">
+      {% if 1 < page %}
+        <li><a id="pageBackLink" href="/?page={{page-1}}"><span>«</span></a></li>
+      {% endif %}
+      {% for p in 1..max_page %}
+        {% if page == p %} 
+          <li class="active"><a id="currentPageLink" href="/?page={{p}}">{{p}}</a></li>
+        {% endif %}
+      {% endfor %}
+      {% if page < max_page %}
+        <li><a id="pageNextLink" href="/?page={{page+1}}"><span>»</span></a></li>
+      {% endif %}
+    </ul>
+  </nav>
+</div>
+<div class="col-md-4"></div>
+
+
+{% endblock %}

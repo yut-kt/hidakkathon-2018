@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/web/thymeleaf/layout">
+<head th:fragment="header">
+<meta http-equiv="Content-Type" content="text/html" charset="utf-8" />
+<link rel="stylesheet" href="/css/bootstrap-tagsinput.css" />
+<link rel="stylesheet" href="/css/bootstrap.min.css" />
+<title>Jiriqi:Team</title>
+</head>
+<body class="container" style="background-color: #fafafa">
+	<nav th:fragment="gnavi(current)" class="navbar navbar-inverse" style="background-color: rgb(69, 138, 197); border-color: rgb(69, 138, 197); color: #FFFFFF">
+		<div class="navbar-header">
+			<button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#patern04">
+				<span class="icon-bar"></span> <span class="icon-bar"></span>
+				<span class="icon-bar"></span>
+			</button>
+			<a href="/" class="navbar-brand" style="color: #FFFFFF">Jiriqi:Team</a>
+		</div>
+
+		<div id="patern04" class="collapse navbar-collapse">
+			<ul class="nav navbar-nav">
+				<li th:class="${current == 'new'} ? 'active'"><a href="/" style="color: #FFFFFF"><i class="glyphicon glyphicon-sunglasses"></i>新着</a></li>
+				<li th:class="${current == 'tags'} ? 'active'"><a href="/tags" style="color: #FFFFFF"><i class="glyphicon glyphicon-tags"></i>タグ</a></li>
+				<li th:class="${current == 'members'} ? 'active'"><a href="/members" style="color: #FFFFFF"><i class="glyphicon glyphicon-user"></i>メンバー</a></li>
+			</ul>
+			<div class="collapse navbar-collapse navbar-right">
+				<p class="navbar-text">
+					<a id="loginUserAlink" th:href="@{|/member/${user.id}|}" class="navbar-link" style="color: #FFFFFF" th:text="${user.nickName}">ニックネーム</a>
+				</p>
+				<button th:unless="${current == 'write'}" id="postButton" type="button" onClick="location.href='/write'" class="btn btn-default navbar-btn " style="background-color: #35c669; border-color: #35c669; color: #FFFFFF">投稿する</button>
+				<button type="button" onClick="location.href='/logout'" class="btn btn-default navbar-btn  ">ログアウト</button>
+			</div>
+		</div>
+	</nav>
+
+	<div class="row">
+
+		<div class="col-md-8 panel panel-primary">
+			<ul class="list-group">
+				<li class="list-group-item" th:each="article, stat : ${articles}" th:object="${article}">
+					<article class="media">
+						<div class="element_icon media-left">
+							<a th:id="|articleAuthorLink${stat.count}|" th:href="@{|/member/*{authorId}|}">
+							<img th:id="|articleAuthorImage${stat.count}|" class="img-rounded" width="40" height="40" th:src="@{|/photo/*{authorId}|}" /></a>
+						</div>
+						<div class="element_body media-body">
+							<div th:id="|articleAuthorNickName${stat.count}|" th:text="*{user.nickName}" class="element_user media-left"></div>
+							<div th:id="|articleUpdateString${stat.count}|" th:text="*{deltaTime}" class="element_datetime media-right"></div>
+							<h2 class="element_title media-heading">
+								<a th:id="|articleLink${stat.count}|" th:href="@{|/article/*{id}|}" th:text="*{title}"></a>
+							</h2>
+							<button type="button" class="btn btn-primary pull-right btn-xs ">
+								<i class="glyphicon glyphicon-thumbs-up"></i>
+								<span class="badge" th:id="|articleIineCount${stat.count}|" th:text="*{iineCount}">10</span>
+							</button>
+							<div class="element_tag media">
+								<div class="element_tag media-left">
+									<a th:each="tag, tagStat : *{tags}" th:id="|article${stat.count}_TagId${tagStat.count}|"
+										th:href="@{|/tag/${tag.id}|}" class="element_tag_base">
+										<span th:id="|article${stat.count}_TagName${tagStat.count}|" th:text="${tag.tagname}" class="element_tag_name label label-default">Java</span>
+									</a>
+								</div>
+							</div>
+						</div>
+					</article>
+				</li>
+			</ul>
+		</div>
+
+		<div class="col-md-4">
+			<div class="">
+				<h4>
+					<i class="glyphicon glyphicon-flag"></i>人気の記事
+				</h4>
+				<ul class="list-group">
+					<li th:each="article, stat : ${popularArticles}" th:object="${article}" class="list-group-item">
+						<div class="media">
+							<div class="element_icon media-left">
+								<a href="/"><img class="img-rounded" width="20" height="20" th:src="@{|/photo/*{article.authorId}|}" /></a>
+							</div>
+							<div class="media-body">
+								<h4 class="media-heading">
+									<a th:id="|popularArticleLink${stat.count}|" th:href="@{|/article/*{article.id}|}" th:text="*{article.title}">タイトル</a>
+								</h4>
+								<div class="media">
+									<span th:id="|popularArticle${stat.count}_iineCount|" th:text="*{iineCount}" class="badge">10</span>
+									<a th:each="iine, iineStat : *{iineUsers}" th:id="|popularArticle${stat.count}_iineUserId ${iineStat.count}|" th:href="@{|/member/${iine.userId}|}">
+										<img class="img-rounded" width="20" height="20" th:src="@{|/photo/${iine.userId}|}" />
+									</a>
+								</div>
+							</div>
+						</div>
+					</li>
+				</ul>
+			</div>
+
+			<div class="">
+				<h4>
+					<i class="glyphicon glyphicon-user"></i> メンバー
+				</h4>
+				<a th:each="ou, stat : ${onlineUsers}" th:id="|onLineUserLink${stat.count}|" th:href="@{|/member/${ou}|}">
+					<img class="img-rounded" width="30" height="30" style="margin: 1px;" th:src="@{|/photo/${ou}|}" />
+				</a>
+				<div class="">
+					<a href="/members">»メンバー一覧</a>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div th:fragment="pagination(path)" style="text-align: center;">
+		<nav>
+			<ul class="pagination">
+				<li th:if="${page} &gt; 1"><a id="pageBackLink" th:href="@{|/${path}?page=${page - 1}|}"><span>«</span></a></li>
+				<li class="active"><a id="currentPageLink" th:href="@{|/${path}?page=${page}|}" th:text="${page}">1</a></li>
+				<li th:if="${page} &lt; ${maxPage}"><a id="pageNextLink" th:href="@{|/${path}?page=${page + 1}|}"><span>»</span></a></li>
+<!-- 
+				<li th:if="${page} &gt; 1"><a id="pageBackLink" th:href="@{|/${path}?page=1|}"><span>«</span></a></li>
+				<li th:if="${page} &gt; 1"><a id="pageBackLink" th:href="@{|/${path}?page=${page - 1}|}"><span>&lt;</span></a></li>
+				<li th:each="i : ${#numbers.sequence(from, to)}" th:class="${i == page} ? 'active' : ''"><a id="currentPageLink" th:href="@{|/${path}?page=${i}|}" th:text="${i}">1</a></li>
+				<li th:if="${page} &lt; ${maxPage}"><a id="pageNextLink" th:href="@{|/${path}?page=${page + 1}|}"><span>&gt;</span></a></li>
+				<li th:if="${page} &lt; ${maxPage}"><a id="pageNextLink" th:href="@{|/${path}?page=${maxPage}|}"><span>»</span></a></li>
+-->
+			</ul>
+		</nav>
+	</div>
+</body>
+</html>
